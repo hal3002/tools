@@ -37,7 +37,14 @@ end.parse!
 abort "Domain is required. Try --help for more information" if options[:domain].nil?
 
 # Add a default nameserver if there isn't one
-options[:nameservers] << "8.8.8.8" if options[:nameservers].empty?
+if options[:nameservers].empty?
+	options[:nameservers] << "8.8.8.8" 		# google
+	options[:nameservers] << "8.8.4.4" 		# google
+	options[:nameservers] << "208.67.222.222"	# OpenDNS
+	options[:nameservers] << "208.67.220.220"	# OpenDNS
+	options[:nameservers] << "209.244.0.3"		# Level3
+	options[:nameservers] << "74.82.42.42"		# Hurricane Electric
+end
 
 # Generate all hostnames and add them to the work queue
 (options[:depth] + 1).times do |i|
