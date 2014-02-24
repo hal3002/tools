@@ -88,8 +88,20 @@ options[:threads].times do
 	end
 end
 
-# Wait for all results to come in
-threads.each { |t| t.join }
+begin
+	# Wait for all results to come in
+	threads.each { |t| t.join }
+
+rescue SignalException => e
+	puts "Stopping threads.  This may take a second"
+
+	# Clear the existing entries and stop the threads
+	req_queue.clear
+	
+	# Wait for the threads to finish	
+	threads.each { |t| t.kill }
+
+end
 
 # Just print the results
 until res_queue.empty?
