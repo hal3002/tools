@@ -9,8 +9,8 @@ Installation:
 
 Usage: dns_brute [options]
 --------------------------
-> -t, --threads THEADS             Number of threads to use. (Default: 30)
-> -d, --domain DOMAINS             The target domain to scan.
+>-t, --threads THEADS             Number of threads to use. (Default: 30)
+>-d, --domain DOMAINS             The target domain to scan.
 > -D, --depth DEPTH                The number of characters deep to go. (Default: 3)
 > -w, --wordlist WORDLIST          Optional dictionary list to test.
 > -n, --nameserver NAMESERVER      DNS server to use for lookups. You can specify this multiple times. (Default: 8.8.8.8)
