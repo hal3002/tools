@@ -69,7 +69,9 @@ end
 # Add a dictionary if we are also doing that
 unless options[:wordlist].nil?
 	File.read(options[:wordlist]).each_line do |line|
-		req_queue << "#{line.chomp}.#{options[:domain]}."
+		if line.chomp =~ /#{options[:pattern]}/i
+			req_queue << "#{line.chomp}.#{options[:domain]}."
+		end
 	end
 end
 
