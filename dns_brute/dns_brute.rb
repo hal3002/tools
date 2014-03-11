@@ -13,6 +13,7 @@ options = {
 	:threads => 30,
 	:depth => 3,
 	:nameservers => [],
+	:charset => "[a-z0-9]"
 }
 
 OptionParser.new do |opts|
@@ -31,6 +32,9 @@ OptionParser.new do |opts|
 	opts.on("-n", "--nameserver NAMESERVER", "DNS server to use for lookups. You can specify this multiple times. (Default: 8.8.8.8)") do |v|
 		options[:nameservers] << v
 	end
+	opts.on("-c", "--charset CHARSET", "The character set use to generate the names using PCRE character classes. (Default: #{options[:charset]})") do |v|
+		options[:charset] = v
+	end
 end.parse!
 
 # Make sure the domain is specified
@@ -46,9 +50,12 @@ if options[:nameservers].empty?
 	options[:nameservers] << "74.82.42.42"		# Hurricane Electric
 end
 
+# Expand the charset into an array
+charset = 0.upto(255).to_a.map{|c| c.chr}.keep_if {|c| c =~ /#{options[:charset]}/}
+
 # Generate all hostnames and add them to the work queue
 (options[:depth] + 1).times do |i|
-	[*('a'..'z'), *('0'..'9')].repeated_permutation(i).map(&:join).reject {|e| e.empty? }.each do |w|
+	charset.repeated_permutation(i).map(&:join).reject {|e| e.empty? }.each do |w|
 		req_queue << "#{w}.#{options[:domain]}"
 	end
 end
