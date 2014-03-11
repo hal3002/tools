@@ -13,7 +13,8 @@ options = {
 	:threads => 30,
 	:depth => 3,
 	:nameservers => [],
-	:charset => "[a-z0-9]"
+	:charset => "[a-z0-9]",
+	:pattern => ".*"
 }
 
 OptionParser.new do |opts|
@@ -34,6 +35,9 @@ OptionParser.new do |opts|
 	end
 	opts.on("-c", "--charset CHARSET", "The character set use to generate the names using PCRE character classes. (Default: #{options[:charset]})") do |v|
 		options[:charset] = v
+	end
+	opts.on("-p", "--pattern PATTERN", "Only send requests for generated hosts matching this pattern. (Default: #{options[:pattern]})") do |v|
+		options[:pattern] = v
 	end
 end.parse!
 
@@ -56,7 +60,9 @@ charset = 0.upto(255).to_a.map{|c| c.chr}.keep_if {|c| c =~ /#{options[:charset]
 # Generate all hostnames and add them to the work queue
 (options[:depth] + 1).times do |i|
 	charset.repeated_permutation(i).map(&:join).reject {|e| e.empty? }.each do |w|
-		req_queue << "#{w}.#{options[:domain]}"
+		if w =~ /#{options[:pattern]}/i
+			req_queue << "#{w}.#{options[:domain]}"
+		end
 	end
 end
 
