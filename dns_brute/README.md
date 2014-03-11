@@ -19,31 +19,31 @@ Usage: dns_brute [options]
 
 Examples:
 ---------
-* Test only single character hostnames for google.com
-> ruby dns_brute.rb -d google.com -D 1
-> d.google.com 21599 IN CNAME www3.l.google.com
-> m.google.com 21599 IN CNAME mobile.l.google.com
-> w.google.com 21599 IN CNAME www3.l.google.com
+* Test only single character hostnames for google.com<br />
+> ruby dns_brute.rb -d google.com -D 1<br />
+> d.google.com 21599 IN CNAME www3.l.google.com<br />
+> m.google.com 21599 IN CNAME mobile.l.google.com<br />
+> w.google.com 21599 IN CNAME www3.l.google.com<br />
 
-* Test four character hostnames using only w's and numbers and only test hosts matching www\d with 100 threads
-> ruby dns_brute.rb -t 100 -n 207.46.75.254 -d microsoft.com -D 4 -c '[w\d]' -p 'www\d' 
-> www4.microsoft.com 3600 IN A 65.55.39.12
-> www4.microsoft.com 3600 IN A 207.46.31.61
-> www6.microsoft.com 3600 IN A 65.55.39.12
-> www6.microsoft.com 3600 IN A 207.46.31.61
-> www9.microsoft.com 3600 IN A 65.55.39.12
-> www9.microsoft.com 3600 IN A 207.46.31.61
-> www2.microsoft.com 3600 IN A 65.55.39.12
-> www2.microsoft.com 3600 IN A 207.46.31.61
-> www7.microsoft.com 3600 IN A 65.55.39.12
-> www7.microsoft.com 3600 IN A 207.46.31.61
-> www3.microsoft.com 3600 IN A 65.55.39.12
-> www3.microsoft.com 3600 IN A 207.46.31.61
-> www1.microsoft.com 3600 IN A 65.55.39.12
-> www1.microsoft.com 3600 IN A 207.46.31.61
-> www8.microsoft.com 3600 IN A 65.55.39.12
-> www8.microsoft.com 3600 IN A 207.46.31.61
-> www5.microsoft.com 3600 IN A 207.46.31.61
-> www5.microsoft.com 3600 IN A 65.55.39.12
-> www0.microsoft.com 3600 IN A 65.55.39.12
-> www0.microsoft.com 3600 IN A 207.46.31.61
+* Test four character hostnames using only w's and numbers and only test hosts matching www\d with 100 threads<br />
+> ruby dns_brute.rb -t 100 -n 207.46.75.254 -d microsoft.com -D 4 -c '[w\d]' -p 'www\d'<br />
+> www4.microsoft.com 3600 IN A 65.55.39.12<br />
+> www4.microsoft.com 3600 IN A 207.46.31.61<br />
+> www6.microsoft.com 3600 IN A 65.55.39.12<br />
+> www6.microsoft.com 3600 IN A 207.46.31.61<br />
+> www9.microsoft.com 3600 IN A 65.55.39.12<br />
+> www9.microsoft.com 3600 IN A 207.46.31.61<br />
+> www2.microsoft.com 3600 IN A 65.55.39.12<br />
+> www2.microsoft.com 3600 IN A 207.46.31.61<br />
+> www7.microsoft.com 3600 IN A 65.55.39.12<br />
+> www7.microsoft.com 3600 IN A 207.46.31.61<br />
+> www3.microsoft.com 3600 IN A 65.55.39.12<br />
+> www3.microsoft.com 3600 IN A 207.46.31.61<br />
+> www1.microsoft.com 3600 IN A 65.55.39.12<br />
+> www1.microsoft.com 3600 IN A 207.46.31.61<br />
+> www8.microsoft.com 3600 IN A 65.55.39.12<br />
+> www8.microsoft.com 3600 IN A 207.46.31.61<br />
+> www5.microsoft.com 3600 IN A 207.46.31.61<br />
+> www5.microsoft.com 3600 IN A 65.55.39.12<br />
+> www0.microsoft.com 3600 IN A 65.55.39.12<br />
+> www0.microsoft.com 3600 IN A 207.46.31.61<br />
