@@ -9,12 +9,12 @@ Installation:
 
 Usage: dns_brute [options]
 --------------------------
->-t, --threads THEADS             Number of threads to use. (Default: 30)
->-d, --domain DOMAINS             The target domain to scan.
-> -D, --depth DEPTH                The number of characters deep to go. (Default: 3)
-> -w, --wordlist WORDLIST          Optional dictionary list to test.
-> -n, --nameserver NAMESERVER      DNS server to use for lookups. You can specify this multiple times. (Default: 8.8.8.8)
-> -c, --charset CHARSET            The character set use to generate the names using PCRE character classes. (Default: [a-z0-9])
+> -t, --threads THEADS             Number of threads to use. (Default: 30)<br />
+> -d, --domain DOMAINS             The target domain to scan.<br />
+> -D, --depth DEPTH                The number of characters deep to go. (Default: 3)<br />
+> -w, --wordlist WORDLIST          Optional dictionary list to test.<br />
+> -n, --nameserver NAMESERVER      DNS server to use for lookups. You can specify this multiple times. (Default: 8.8.8.8)<br />
+> -c, --charset CHARSET            The character set use to generate the names using PCRE character classes. (Default: [a-z0-9])<br />
 > -p, --pattern PATTERN            Only send requests for generated hosts matching this pattern. (Default: .*)
 
 Examples:
