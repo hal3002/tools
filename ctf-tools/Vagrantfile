@@ -1,0 +1,96 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+$bootstrap = <<SCRIPT
+sudo dpkg --add-architecture i386
+sudo apt-get update
+sudo apt-get install libc6:i386 libncurses5:i386 libstdc++6:i386
+sudo apt-get -fuy dist-upgrade
+sudo apt-get -fuy -o Dpkg::Options::='--force-confold' install git virtualenvwrapper
+
+git clone https://github.com/zardus/ctf-tools.git /home/ubuntu/ctf-tools/
+sudo mv /home/ubuntu/ctf-tools /opt
+/opt/ctf-tools/bin/manage-tools -s setup
+
+sudo mkdir /opt/ctf
+sudo chown ubuntu:ubuntu /opt/ctf
+virtualenv --system-site-packages /opt/ctf
+
+echo 'export PATH=/opt/ctf/bin:/opt/ctf-tools/bin:$PATH' >> $HOME/.bashrc
+echo 'export VIRTUAL_ENV=/opt/ctf' >> $HOME/.bashrc
+
+export PATH=/opt/ctf/bin:/opt/ctf-tools/bin:/bin:/usr/bin:/usr/local/bin:/usr/local/sbin:/sbin:/usr/sbin
+export VIRTUAL_ENV=/opt/ctf
+
+easy_install --upgrade pip
+
+# Tools that don't require other pieces
+manage-tools -s install xortool
+manage-tools -s install ropper
+manage-tools -s install binwalk
+manage-tools -s install pwntools
+manage-tools -s install sqlmap
+manage-tools -s install preeny
+manage-tools -s install qira
+manage-tools -s install gdb
+manage-tools -s install radare2
+manage-tools -s install peda
+manage-tools -s install qemu
+manage-tools -s install afl
+manage-tools -s install stegsolve
+manage-tools -s install checksec
+manage-tools -s install pdf-parser
+manage-tools -s install angr
+manage-tools -s install firmware-mod-kit
+manage-tools -s install shellnoob
+
+
+# Metasploit
+curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > msfinstall && chmod 755 msfinstall && ./msfinstall && rm msfinstall
+
+# Finally, any tools available in apt
+sudo apt-get build-dep python-imaging
+sudo apt-get -y install libjpeg8 libjpeg62-dev libfreetype6 libfreetype6-dev
+sudo pip install Pillow
+sudo apt-get -y install vim nmap gdb-multiarch bvi libx32gcc-4.8-dev libc6-dev-i386
+
+# Grab qemu full systems images for arm and mips
+git clone https://github.com/linuxgeek247/qemu-system-setup.git
+cd qemu-system-setup
+./download.sh
+cd start-scripts
+
+for x in *.sh; do
+   cp $x ../qemu-images/`basename $x .sh`/start.sh
+done
+
+cd ../
+sudo mv qemu-images /opt
+cd ../
+rm -rf qemu-system-setup
+
+
+SCRIPT
+
+Vagrant.configure("2") do |config|
+   config.vm.box = "dummy"
+   config.vm.hostname = "ctf"
+   config.vm.provision "shell", privileged: false, inline: $bootstrap
+   config.vbguest.installer_arguments = []
+
+   config.vm.provider :aws do |aws, override|
+      aws_credentials = IniFile.load(File.expand_path("#{ENV['HOME']}/.aws/credentials"))
+      aws.access_key_id = aws_credentials['default']['aws_access_key_id']
+      aws.secret_access_key = aws_credentials['default']['aws_secret_access_key']
+
+      aws_config = IniFile.load(File.expand_path('~/.aws/config'))
+      aws.region = aws_config['default']['region']
+      aws.ami = aws_config['default']['ami']
+      aws.keypair_name = aws_config['default']['keypair_name']
+      aws.security_groups = aws_config['default']['security_groups']
+      aws.instance_type = aws_config['default']['instance_type']
+      aws.block_device_mapping = [{ 'DeviceName' => '/dev/sda1', 'Ebs.VolumeSize' => 50 }]
+      override.ssh.username = aws_config['default']['username']
+      override.ssh.private_key_path = aws_config['default']['private_key_path']
+   end
+end
