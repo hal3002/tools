@@ -1,0 +1,1 @@
+Simple SSL MITM tool that uses socat and should be protocol agnostic for data inside of the SSL tunnel.
