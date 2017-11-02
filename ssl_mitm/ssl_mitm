@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+FILENAME=socat
+
+LOCAL_PORT=4443
+REMOTE_HOST=www.google.com
+REMOTE_PORT=443
+
+if [ ! -f $FILENAME.pem ]; then
+    openssl genrsa -out $FILENAME.key 1024
+    openssl req -new -key $FILENAME.key -x509 -days 3653 -out $FILENAME.crt
+    cat $FILENAME.key $FILENAME.crt >$FILENAME.pem
+fi
+
+socat -v -x openssl-listen:$LOCAL_PORT,reuseaddr,cert=$PWD/$FILENAME.pem,cafile=$PWD/$FILENAME.crt,verify=0 openssl-connect:$REMOTE_HOST:$REMOTE_PORT,verify=0
