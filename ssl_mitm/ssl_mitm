@@ -27,14 +27,14 @@ while getopts 'P:d:p:hts' flag; do
     esac
 done
 
-CMD="socat -v -x openssl-listen:$LOCAL_PORT,reuseaddr,cert=$PWD/$FILENAME.pem,cafile=$PWD/$FILENAME.crt,verify=0 openssl-connect:$REMOTE_HOST:$REMOTE_PORT,verify=0"
-
+CMD_SERVER="socat -v -x openssl-listen:$LOCAL_PORT,reuseaddr,cert=$PWD/$FILENAME.pem,cafile=$PWD/$FILENAME.crt,verify=0,fork TCP:localhost:31337"
+CMD_CLIENT="socat -v -x TCP-LISTEN:31337,reuseaddr,fork openssl-connect:$REMOTE_HOST:$REMOTE_PORT,verify=0"
 
 if [ $TOR == true ]; then
-    CMD="proxychains $CMD"
+    CMD_CLIENT="proxychains $CMD_CLIENT"
 fi
 if [ $SUDO == true ]; then
-    CMD="sudo $CMD"
+    CMD_SERVER="sudo $CMD_SERVER"
 fi
 if [ $LOCAL_PORT -lt 1024 ]; then
     if [ $SUDO == false ]; then
@@ -52,8 +52,25 @@ if [ ! -f $FILENAME.pem ]; then
 fi
 
 while [ true ]; do
-    echo $CMD
-    $CMD
+    echo $CMD_CLIENT
+    $CMD_CLIENT &
+    $PID_CLIENT=$$
+
+    echo $CMD_SERVER
+    $CMD_SERVER
+    $PID_SERVER=$$
 
     test $? -gt 128 && break
 done
+
+if [ $PID_CLIENT ]; then
+    kill -9 $PID_CLIENT
+fi
+
+if [ $PID_SERVER ]; then
+    if [ $SUDO == true ]; then
+        sudo kill -9 $PID_SERVER
+    else
+        kill -9 $PID_SERVER
+    fi
+fi
